@@ -1,0 +1,6 @@
+@ITAM_HostAddress = http://localhost:5237
+
+GET {{ITAM_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
