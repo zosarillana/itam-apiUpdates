@@ -5,6 +5,7 @@ using ITAM.Services;
 using ITAM.Services.AssetImportService;
 using ITAM.Services.AssetService;
 using ITAM.Services.ComputerService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using System.Security.Claims;
 
 namespace ITAM.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetController : ControllerBase

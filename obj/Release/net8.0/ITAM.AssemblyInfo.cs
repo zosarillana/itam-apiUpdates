@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ITAM")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bb530c28f0eed72aa8edb1923617e35b975b26c6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b0029e19cd149e0237ba191d526c12a82d9c69c5")]
 [assembly: System.Reflection.AssemblyProductAttribute("ITAM")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ITAM")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
