@@ -1,11 +1,13 @@
 ﻿using ITAM.DataContext;
 using ITAM.Models.Approval;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ITAM.Controllers
 {
-    [Route("api/api/[controller]")]
+    [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
     public class ReturnItemsApprovalController : ControllerBase
     {

@@ -12,7 +12,8 @@ using System.Security.Claims;
 
 namespace ITAM.Controllers
 {
-    [Route("api/api/[controller]")]
+    [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
     public class ComputerComponentsController : ControllerBase
     {

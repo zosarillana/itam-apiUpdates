@@ -1,10 +1,12 @@
 ﻿using ITAM.Services.ImageService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ITAM.Controllers
 {
-    [Route("api/api/[controller]")]
+    [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
     public class ImageController : ControllerBase
     {

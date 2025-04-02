@@ -62,6 +62,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ITAM API", Version = "v1" });
 
+    // Define the security scheme
     var securityScheme = new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -69,14 +70,27 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
-        BearerFormat = "JWT"
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
     };
 
     c.AddSecurityDefinition("Bearer", securityScheme);
+
+    // Make all endpoints require authorization by default
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        { securityScheme, new string[] { } }
+        {
+            securityScheme,
+            new string[] {}
+        }
     });
+
+    // Optional: If you want to mark specific endpoints as not requiring auth, you can use Operation Filters
+    // c.OperationFilter<AuthResponsesOperationFilter>();
 });
 
 // ✅ Enable CORS (adjust if needed)
@@ -122,7 +136,13 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ITAM API v1");
+        // Enable the "Authorize" button in Swagger UI
+        c.OAuthClientId("swagger-ui");
+        c.OAuthAppName("Swagger UI");
+    });
 }
 
 app.UseHttpsRedirection();

@@ -1,6 +1,7 @@
 ﻿using ITAM.DataContext;
 using ITAM.Models;
 using ITAM.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,8 @@ using System.Security.Claims;
 
 namespace ITAM.Controllers
 {
-    [Route("api/api/[controller]")]
+    [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {

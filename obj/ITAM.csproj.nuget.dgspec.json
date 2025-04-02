@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj": {}
+    "C:\\Users\\JBARNADO\\Desktop\\itams-v3\\itam-apiUpdates\\ITAM.csproj": {}
   },
   "projects": {
-    "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj": {
+    "C:\\Users\\JBARNADO\\Desktop\\itams-v3\\itam-apiUpdates\\ITAM.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj",
+        "projectUniqueName": "C:\\Users\\JBARNADO\\Desktop\\itams-v3\\itam-apiUpdates\\ITAM.csproj",
         "projectName": "ITAM",
-        "projectPath": "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj",
-        "packagesPath": "C:\\Users\\zcsarillana\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\obj\\",
+        "projectPath": "C:\\Users\\JBARNADO\\Desktop\\itams-v3\\itam-apiUpdates\\ITAM.csproj",
+        "packagesPath": "C:\\Users\\JBARNADO\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\JBARNADO\\Desktop\\itams-v3\\itam-apiUpdates\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\zcsarillana\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\JBARNADO\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -114,7 +114,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
