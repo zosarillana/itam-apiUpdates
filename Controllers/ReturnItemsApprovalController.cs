@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ITAM.Controllers
 {
-    [Route("api/api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ReturnItemsApprovalController : ControllerBase
     {

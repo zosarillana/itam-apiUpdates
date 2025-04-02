@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Route("api/api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ComputerController : ControllerBase
     {

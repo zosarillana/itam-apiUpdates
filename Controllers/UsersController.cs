@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace ITAM.Controllers
 {
-    [Route("api/api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
