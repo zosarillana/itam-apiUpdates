@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj": {}
+    "D:\\it-assets-management\\itam-ui-april\\itam-api\\040325\\itam-apiUpdates\\ITAM.csproj": {}
   },
   "projects": {
-    "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj": {
+    "D:\\it-assets-management\\itam-ui-april\\itam-api\\040325\\itam-apiUpdates\\ITAM.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj",
+        "projectUniqueName": "D:\\it-assets-management\\itam-ui-april\\itam-api\\040325\\itam-apiUpdates\\ITAM.csproj",
         "projectName": "ITAM",
-        "projectPath": "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj",
+        "projectPath": "D:\\it-assets-management\\itam-ui-april\\itam-api\\040325\\itam-apiUpdates\\ITAM.csproj",
         "packagesPath": "C:\\Users\\zcsarillana\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\obj\\",
+        "outputPath": "D:\\it-assets-management\\itam-ui-april\\itam-api\\040325\\itam-apiUpdates\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\zcsarillana\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UserAccountabilityListController : ControllerBase
@@ -20,7 +20,7 @@ namespace ITAM.Controllers
             _context = context;
         }
 
-
+        [Authorize]
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAllUserAccountabilityLists(int pageNumber = 1, int pageSize = 10)
         {
@@ -131,6 +131,7 @@ namespace ITAM.Controllers
         //    public string employee_id { get; set; }
         //}
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<object>> GetUserAccountabilityListById(int id)
         {
@@ -373,8 +374,7 @@ namespace ITAM.Controllers
             }
         }
 
-
-
+        [Authorize]
         [HttpPost("add-accountability")]
         public async Task<IActionResult> AddAccountability([FromBody] UserAccountabilityListDto dto)
         {
@@ -591,7 +591,7 @@ namespace ITAM.Controllers
             return (newAccountabilityCode, newTrackingCode);
         }
 
-
+        [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUserAccountabilityList(int id)
         {

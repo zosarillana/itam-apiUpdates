@@ -12,7 +12,7 @@ using System.Security.Claims;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class ComputerComponentsController : ControllerBase
@@ -37,7 +37,7 @@ namespace ITAM.Controllers
             return component?.description ?? string.Empty;
         }
 
-
+        [Authorize]
         [HttpGet("{uid}")]
         public async Task<IActionResult> GetComponentByUid(string uid)
         {
@@ -109,8 +109,7 @@ namespace ITAM.Controllers
             return Ok(componentDetails);
         }
 
-
-
+        [Authorize]
         [HttpGet("Components")]
         public async Task<IActionResult> GetAllComponents(
          int pageNumber = 1,
@@ -258,7 +257,7 @@ namespace ITAM.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("Components/{id}")]
         public async Task<IActionResult> GetComponentById(int id)
         {
@@ -273,7 +272,7 @@ namespace ITAM.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateComponent([FromBody] CreateComputerComponentsDTO componentDTO)
         {
@@ -723,7 +722,7 @@ namespace ITAM.Controllers
         //    }
         //}
 
-
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateComponent(int id, [FromBody] ComputerComponentUpdateDto component)
         {
@@ -795,10 +794,7 @@ namespace ITAM.Controllers
             }
         }
 
-
-
-
-
+        [Authorize]
         [HttpPut("pullout/{id}")]
         public async Task<IActionResult> PullOutComponent(int id, [FromBody] PullOutRequest request)
         {
@@ -894,15 +890,7 @@ namespace ITAM.Controllers
             return Ok(new { message = "Component pulled out successfully", component });
         }
 
-
-
-
-
-
-
-
-
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComponent(int id)
         {

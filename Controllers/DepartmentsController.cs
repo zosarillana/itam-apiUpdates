@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentsController : ControllerBase
@@ -19,6 +19,7 @@ namespace ITAM.Controllers
             _context = context;
         }
 
+        [Authorize]
         // GET: api/Departments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> Getdepartment()
@@ -26,6 +27,7 @@ namespace ITAM.Controllers
             return await _context.department.ToListAsync();
         }
 
+        [Authorize]
         // GET: api/Departments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(int id)
@@ -40,6 +42,7 @@ namespace ITAM.Controllers
             return department;
         }
 
+        [Authorize]
         // PUT: api/Departments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -71,6 +74,7 @@ namespace ITAM.Controllers
             return NoContent();
         }
 
+        [Authorize]
         // POST: api/Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -82,6 +86,7 @@ namespace ITAM.Controllers
             return CreatedAtAction("GetDepartment", new { id = department.id }, department);
         }
 
+        [Authorize]
         // DELETE: api/Departments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)

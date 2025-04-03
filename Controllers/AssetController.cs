@@ -13,7 +13,7 @@ using System.Security.Claims;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
+   
     [Route("api/[controller]")]
     [ApiController]
     public class AssetController : ControllerBase
@@ -36,6 +36,7 @@ namespace ITAM.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        [Authorize]
         [HttpPost("import")]
         public async Task<IActionResult> ImportAssets(IFormFile file)
         {
@@ -53,6 +54,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateComputer([FromBody] CreateComputerRequest request)
         {
@@ -64,6 +66,7 @@ namespace ITAM.Controllers
             return BadRequest(new { message = result.message });
         }
 
+        [Authorize]
         //assign owner for vacant asset items
         [HttpPost("assign-owner")]
         public async Task<IActionResult> AssignOwnerToAsset([FromBody] AssignOwnerDto assignOwnerDto)
@@ -80,6 +83,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         //post endpoint for creating vacant item for asset and computer items store based on type
         [HttpPost("create-vacant-asset/computer-items")]
         public async Task<IActionResult> CreateVacantAsset([FromBody] CreateAssetDto assetDto)
@@ -102,6 +106,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("pull_in_assets")]
         public async Task<(bool success, string message)> PullInAssetsAsync(PullInAssetRequest request)
         {
@@ -190,15 +195,7 @@ namespace ITAM.Controllers
             }
         }
 
-
-
-
-
-
-
-
-
-
+        [Authorize]
         // Get endpoint to fetch only assets based on owner ID
         [HttpGet("assets/owner/{owner_id}")]
         public async Task<IActionResult> GetAssetsByOwnerId(int owner_id)
@@ -221,7 +218,7 @@ namespace ITAM.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("type-filter-asset-computers/{type}")]
         public async Task<IActionResult> GetAssetsByType(
         string type,
@@ -248,7 +245,7 @@ namespace ITAM.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpGet("AssetItems")]
         public async Task<IActionResult> GetAllAssets(
             int pageNumber = 1,
@@ -274,7 +271,7 @@ namespace ITAM.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("assets/vacant")]
         public async Task<IActionResult> GetVacantAssets()
         {
@@ -291,7 +288,7 @@ namespace ITAM.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("AssetItems/{id}")]
         public async Task<IActionResult> GetAssetById(
         int id,
@@ -317,7 +314,7 @@ namespace ITAM.Controllers
 
 
 
-
+        [Authorize]
         [HttpPut("update-asset/{asset_id}")]
         public async Task<IActionResult> UpdateAsset(int asset_id, [FromBody] UpdateAssetDto assetDto)
         {
@@ -353,7 +350,7 @@ namespace ITAM.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPut("pullout/{asset_id}")]
         public async Task<IActionResult> PullOutAsset(int asset_id, [FromBody] PullOutRequest request)
         {
@@ -449,7 +446,7 @@ namespace ITAM.Controllers
 
 
 
-
+        [Authorize]
         [HttpDelete("delete-asset/{id}")]
         public async Task<IActionResult> DeleteAsset(int id)
         {

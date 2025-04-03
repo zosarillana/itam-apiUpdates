@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class RepairLogsController : ControllerBase
@@ -19,6 +19,7 @@ namespace ITAM.Controllers
             _context = context;
         }
 
+        [Authorize]
         // GET: api/RepairLogs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<object>>> GetRepairLogs(
@@ -167,6 +168,7 @@ namespace ITAM.Controllers
             return Ok(enrichedLogs);
         }
 
+        [Authorize]
         // GET: api/RepairLogs/byComputer/{computer_id}
         [HttpGet("byComputer/{computer_id}")]
         public async Task<ActionResult<IEnumerable<object>>> GetRepairLogsByComputer(string computer_id)
@@ -265,10 +267,7 @@ namespace ITAM.Controllers
             return Ok(enrichedLogs);
         }
 
-
-
-
-
+        [Authorize]
         // GET: api/RepairLogs/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Repair_logs>> GetRepairLogById(int id)

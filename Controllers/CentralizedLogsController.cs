@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class CentralizedLogsController : ControllerBase
@@ -18,6 +18,7 @@ namespace ITAM.Controllers
         {
             _context = context;
         }
+        [Authorize]
 
         // GET: api/CentralizedLogs
         [HttpGet]
@@ -55,6 +56,7 @@ namespace ITAM.Controllers
                 return BadRequest($"Error retrieving logs: {ex.Message}");
             }
         }
+        [Authorize]
 
         // GET: api/CentralizedLogs/5
         [HttpGet("{id}")]
@@ -70,6 +72,7 @@ namespace ITAM.Controllers
             return centralizedLogs;
         }
 
+        [Authorize]
         // GET: api/CentralizedLogs/type/{type}
         [HttpGet("type/{type}")]
         public async Task<ActionResult<IEnumerable<CentralizedLogs>>> GetCentralizedLogsByType(

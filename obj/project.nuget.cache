@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "y93X20ClXH4=",
+  "dgSpecHash": "jgawaFnjk44=",
   "success": true,
-  "projectFilePath": "C:\\Users\\zcsarillana\\Desktop\\itamssss\\ITAM\\ITAM.csproj",
+  "projectFilePath": "D:\\it-assets-management\\itam-ui-april\\itam-api\\040325\\itam-apiUpdates\\ITAM.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\zcsarillana\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\zcsarillana\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

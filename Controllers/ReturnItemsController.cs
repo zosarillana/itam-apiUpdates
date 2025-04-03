@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
+
     [Route("api/[controller]")]
     [ApiController]
     public class ReturnItemsController : ControllerBase
@@ -19,6 +19,7 @@ namespace ITAM.Controllers
             _context = context;
         }
 
+        [Authorize]
         // ✅ 1. Get all return records
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReturnItems>>> GetReturnItems()
@@ -31,6 +32,7 @@ namespace ITAM.Controllers
                 .ToListAsync();
         }
 
+        [Authorize]
         // ✅ 2. Get return item by ID
         [HttpGet("{id}")]
         public async Task<ActionResult<ReturnItems>> GetReturnItemById(int id)
@@ -50,6 +52,7 @@ namespace ITAM.Controllers
             return returnItem;
         }
 
+        [Authorize]
         // ✅ 3. Get return items by User ID
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IEnumerable<ReturnItems>>> GetReturnItemsByUserId(int userId)
@@ -69,6 +72,7 @@ namespace ITAM.Controllers
             return returnItems;
         }
 
+        [Authorize]
         [HttpGet("accountability/{accountabilityId}")]
         public async Task<ActionResult<IEnumerable<ReturnItems>>> GetReturnItemsByAccountabilityId(int accountabilityId)
         {
@@ -155,10 +159,7 @@ namespace ITAM.Controllers
             }));
         }
 
-
-
-
-
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ReturnItems>> CreateReturnItem(ReturnItems returnItem)
         {
@@ -287,15 +288,7 @@ namespace ITAM.Controllers
             }
         }
 
-
-
-
-
-
-
-
-
-
+        [Authorize]
         // ✅ 5. Update return item status & remarks
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReturnItem(int id, ReturnItems updatedReturnItem)
@@ -315,6 +308,7 @@ namespace ITAM.Controllers
             return Ok(returnItem);
         }
 
+        [Authorize]
         // ✅ 6. Delete a return item entry (Optional: Change to soft delete)
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReturnItem(int id)

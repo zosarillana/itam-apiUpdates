@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class ComputerController : ControllerBase
@@ -25,6 +25,7 @@ namespace ITAM.Controllers
             _userService = userService;
         }
 
+        [Authorize]
         // Endpoint for assigning owner to a computer
         [HttpPost("assign-owner-computer")]
         public async Task<IActionResult> AssignOwnerToComputer([FromBody] AssignOwnerforComputerDto assignOwnerforComputerDto)
@@ -47,6 +48,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         // Get all computers
         [HttpGet("ComputerItems")]
         public async Task<IActionResult> GetAllComputers(
@@ -72,6 +74,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         // Get all vacant computers
         [HttpGet("vacant")]
         public async Task<IActionResult> GetVacantComputers()
@@ -142,7 +145,7 @@ namespace ITAM.Controllers
             }
         }
 
-
+        [Authorize]
         // Get computer by ID
         [HttpGet("Computers/{id}")]
         public async Task<IActionResult> GetComputerById(int id)
@@ -164,6 +167,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         // Get endpoint to fetch only computers based on owner ID
         [HttpGet("computers/owner/{owner_id}")]
         public async Task<IActionResult> GetComputersByOwnerId(int owner_id)
@@ -185,6 +189,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("computers/pullout/{computerId}")]
         public async Task<IActionResult> PullOutComputer(int computerId)
         {
@@ -205,7 +210,7 @@ namespace ITAM.Controllers
             }
         }
 
-
+        [Authorize]
         // Update computer details
         [HttpPut("update-computer/{computer_id}")]
         public async Task<IActionResult> UpdateComputer(int computer_id, [FromBody] UpdateComputerDto computerDto)
@@ -244,6 +249,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         // Delete a computer
         [HttpDelete("delete-computer/{id}")]
         public async Task<IActionResult> DeleteComputer(int id)

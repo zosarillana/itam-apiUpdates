@@ -76,7 +76,7 @@ builder.Services.AddSwaggerGen(c =>
             Type = ReferenceType.SecurityScheme,
             Id = "Bearer"
         }
-    };
+    };       
 
     c.AddSecurityDefinition("Bearer", securityScheme);
 
