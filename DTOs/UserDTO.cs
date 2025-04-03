@@ -4,6 +4,13 @@
     {
     }
 
+    // Request model
+    public class ChangePasswordRequest
+    {
+        public string CurrentPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
+
     public class LoginRequest
     {
         public string employee_id { get; set; }
@@ -30,10 +37,5 @@
         public string? Message { get; set; }
     }
 
-    // Request model
-    public class ChangePasswordRequest
-    {
-        public string CurrentPassword { get; set; }
-        public string NewPassword { get; set; }
-    }
+   
 }
