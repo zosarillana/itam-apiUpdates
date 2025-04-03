@@ -17,7 +17,7 @@ namespace ITAM.Controllers
             _imageService = imageService;
         }
 
-        [Authorize]
+    
         // Upload Asset Image
         [HttpPost("upload-asset/{assetId}")]
         public async Task<IActionResult> UploadAssetImage(int assetId, IFormFile assetImage)
@@ -38,7 +38,6 @@ namespace ITAM.Controllers
             }
         }
 
-        [Authorize]
         // Upload Computer Image
         [HttpPost("upload-computer/{computerId}")]
         public async Task<IActionResult> UploadComputerImage(int computerId, IFormFile computerImage)
@@ -59,7 +58,7 @@ namespace ITAM.Controllers
             }
         }
 
-        [Authorize]
+       
         //Upload Computer Component Image
         [HttpPost("upload-components/{componentId}")]
         public async Task<IActionResult> UploadComponentImage(int componentId, IFormFile componentImage)
@@ -80,7 +79,7 @@ namespace ITAM.Controllers
             }
         }
 
-        [Authorize]
+   
         // Get Asset Image by Filename
         [HttpGet("asset/{filename}")]
         public IActionResult GetAssetImage(string filename)
@@ -88,7 +87,7 @@ namespace ITAM.Controllers
             return GetImageResponse(() => _imageService.GetAssetImageByFilenameAsync(filename));
         }
 
-        [Authorize]
+    
         // Get Computer Image by Filename
         [HttpGet("computer/{filename}")]
         public IActionResult GetComputerImage(string filename)
@@ -96,7 +95,7 @@ namespace ITAM.Controllers
             return GetImageResponse(() => _imageService.GetComputerImageByFilenameAsync(filename));
         }
 
-        [Authorize]
+  
         //Get Component image by filename
         [HttpGet("component/{filename}")]
         public IActionResult GetComponentImage(string filename)
@@ -104,7 +103,7 @@ namespace ITAM.Controllers
             return GetImageResponse(() => _imageService.GetComponentImageByFilenameAsync(filename));
         }
 
-        [Authorize]
+      
         // Get E-Signature image by filename
         [HttpGet("esignature/{filename}")]
         public IActionResult GetESignatureImage(string filename)
