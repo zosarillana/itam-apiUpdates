@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ReturnItemsController : ControllerBase
@@ -158,7 +157,7 @@ namespace ITAM.Controllers
 
 
 
-
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ReturnItems>> CreateReturnItem(ReturnItems returnItem)
         {
@@ -297,6 +296,7 @@ namespace ITAM.Controllers
 
 
         // ✅ 5. Update return item status & remarks
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReturnItem(int id, ReturnItems updatedReturnItem)
         {
@@ -316,6 +316,7 @@ namespace ITAM.Controllers
         }
 
         // ✅ 6. Delete a return item entry (Optional: Change to soft delete)
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReturnItem(int id)
         {

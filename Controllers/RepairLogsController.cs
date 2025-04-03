@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RepairLogsController : ControllerBase

@@ -582,3 +582,10 @@ C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\obj\Debug\net8.0\refint\ITAM.
 C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\obj\Debug\net8.0\ITAM.pdb
 C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\obj\Debug\net8.0\ITAM.genruntimeconfig.cache
 C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\obj\Debug\net8.0\ref\ITAM.dll
+C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\bin\Debug\net8.0\SeedData\Signatures\005029_signature.png
+C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\bin\Debug\net8.0\SeedData\Signatures\011404_signature.png
+C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\bin\Debug\net8.0\SeedData\Signatures\210953_signature.png
+C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\bin\Debug\net8.0\SeedData\Signatures\211030_signature.png
+C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\bin\Debug\net8.0\SeedData\Signatures\211071_signature.png
+C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\bin\Debug\net8.0\SeedData\Signatures\211125_signature.png
+C:\Users\JBARNADO\Desktop\itams-v3\itam-apiUpdates\bin\Debug\net8.0\SeedData\Signatures\211300_signature.png

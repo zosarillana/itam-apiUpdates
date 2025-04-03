@@ -29,4 +29,11 @@
         public string? Role { get; set; }
         public string? Message { get; set; }
     }
+
+    // Request model
+    public class ChangePasswordRequest
+    {
+        public string CurrentPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
 }

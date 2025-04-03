@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ImageController : ControllerBase

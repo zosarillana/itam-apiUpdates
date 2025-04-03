@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountabilityApprovalController : ControllerBase
@@ -65,7 +64,7 @@ namespace ITAM.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("prepared-by-user-id")] // Check by user
         public IActionResult PreparedByUser(int accountabilityId, string userId)
         {
@@ -84,6 +83,7 @@ namespace ITAM.Controllers
             return Ok(approval);
         }
 
+        [Authorize]
         [HttpPut("approved-by-user-id")] // Receive by user
         public IActionResult ApprovedByUser(int id, string userId)
         {
@@ -95,6 +95,7 @@ namespace ITAM.Controllers
             return Ok(approval);
         }
 
+        [Authorize]
         [HttpPut("confirm")] // Confirm by user
         public IActionResult ConfirmByUser(int id, string userId)
         {

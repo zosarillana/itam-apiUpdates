@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ComputerController : ControllerBase
@@ -26,6 +25,7 @@ namespace ITAM.Controllers
         }
 
         // Endpoint for assigning owner to a computer
+        [Authorize]
         [HttpPost("assign-owner-computer")]
         public async Task<IActionResult> AssignOwnerToComputer([FromBody] AssignOwnerforComputerDto assignOwnerforComputerDto)
         {
@@ -185,6 +185,7 @@ namespace ITAM.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("computers/pullout/{computerId}")]
         public async Task<IActionResult> PullOutComputer(int computerId)
         {
@@ -207,6 +208,7 @@ namespace ITAM.Controllers
 
 
         // Update computer details
+        [Authorize]
         [HttpPut("update-computer/{computer_id}")]
         public async Task<IActionResult> UpdateComputer(int computer_id, [FromBody] UpdateComputerDto computerDto)
         {
@@ -245,6 +247,7 @@ namespace ITAM.Controllers
         }
 
         // Delete a computer
+        [Authorize]
         [HttpDelete("delete-computer/{id}")]
         public async Task<IActionResult> DeleteComputer(int id)
         {

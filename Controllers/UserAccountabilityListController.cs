@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserAccountabilityListController : ControllerBase
@@ -292,6 +291,7 @@ namespace ITAM.Controllers
                     .ToListAsync();
 
                 // Get all components in a single query
+                // Get all components in a single query
                 var components = await _context.computer_components
                     .Where(cc => cc.computer_id.HasValue && computerIds.Contains(cc.computer_id.Value))
                     .GroupBy(cc => cc.computer_id)
@@ -310,7 +310,8 @@ namespace ITAM.Controllers
                                     date_acquired = cc.date_acquired,
                                     asset_barcode = cc.asset_barcode,
                                     cost = cc.cost,
-                                    status = cc.status
+                                    status = cc.status,
+                                    type = cc.type // Ensure this property is included
                                 }).ToList()
                             })
                             .ToList()
@@ -374,7 +375,7 @@ namespace ITAM.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("add-accountability")]
         public async Task<IActionResult> AddAccountability([FromBody] UserAccountabilityListDto dto)
         {
@@ -591,7 +592,7 @@ namespace ITAM.Controllers
             return (newAccountabilityCode, newTrackingCode);
         }
 
-
+        [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUserAccountabilityList(int id)
         {

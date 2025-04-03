@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentsController : ControllerBase
@@ -42,6 +41,7 @@ namespace ITAM.Controllers
 
         // PUT: api/Departments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDepartment(int id, Department department)
         {
@@ -73,6 +73,7 @@ namespace ITAM.Controllers
 
         // POST: api/Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Department>> PostDepartment(Department department)
         {
@@ -83,6 +84,7 @@ namespace ITAM.Controllers
         }
 
         // DELETE: api/Departments/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {

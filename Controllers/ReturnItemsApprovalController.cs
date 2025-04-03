@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ITAM.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ReturnItemsApprovalController : ControllerBase
@@ -76,6 +75,7 @@ namespace ITAM.Controllers
             return Ok(approval);
         }
 
+        [Authorize]
         [HttpPost("check")] // Check by user
         public IActionResult CheckByUser(int accountabilityId, string userId)
         {
@@ -94,6 +94,7 @@ namespace ITAM.Controllers
             return Ok(approval);
         }
 
+        [Authorize]
         [HttpPut("receive")] // Receive by user
         public IActionResult ReceiveByUser(int id, string userId)
         {
@@ -105,6 +106,7 @@ namespace ITAM.Controllers
             return Ok(approval);
         }
 
+        [Authorize]
         [HttpPut("confirm")] // Confirm by user
         public IActionResult ConfirmByUser(int id, string userId)
         {
