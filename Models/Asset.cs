@@ -25,6 +25,7 @@ namespace ITAM.Models
         public string? status { get; set; }
         public List<int>? root_history { get; set; } = new List<int>();
         public int? computer_id { get; set; } // added this 
+        public string? fa_code { get; set; }
 
 
 

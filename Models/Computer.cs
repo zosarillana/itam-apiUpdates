@@ -15,6 +15,11 @@ namespace ITAM.Models
         public string? hdd { get; set; }
         public string? gpu { get; set; }
         public string? board { get; set; }
+        public string? psu { get; set; }
+        public string? cpu { get; set; }
+        public string? cpu_fan { get; set; }
+        public string? cd_rom { get; set; }
+
         public string? size { get; set; }
         public string? color { get; set; }
         public string? serial_no { get; set; }
@@ -29,6 +34,8 @@ namespace ITAM.Models
         public bool is_deleted { get; set; } = false;
         public string? status { get; set; }
         public List<int>? assigned_assets { get; set; } = new List<int>(); //assets_id
+        public string? fa_code { get; set; }
+
 
 
 

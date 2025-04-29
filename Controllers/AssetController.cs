@@ -36,7 +36,6 @@ namespace ITAM.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [Authorize]
         [HttpPost("import")]
         public async Task<IActionResult> ImportAssets(IFormFile file)
         {

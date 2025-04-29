@@ -22,15 +22,9 @@ namespace ITAM.Services.AssetImportService
             if (file == null || file.Length == 0)
                 throw new ArgumentException("No file uploaded.");
 
-            var computerTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "CPU", "CPU CORE i7 10th GEN", "CPU INTEL CORE i5",
-                "Laptop", "Laptop Macbook AIR, NB 15S-DUI537TU"
-            };
-
+            var computerTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DESKTOP", "LAPTOP" };
             int accountabilityCodeCounter = 1;
             int trackingCodeCounter = 1;
-
             string performedByUserId = userClaims?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "SYSTEM";
 
             using (var stream = file.OpenReadStream())
@@ -39,162 +33,103 @@ namespace ITAM.Services.AssetImportService
                 var worksheet = package.Workbook.Worksheets[0];
                 var rowCount = worksheet.Dimension.Rows;
 
+                // First pass - process computers and create them if they don't exist
                 for (int row = 2; row <= rowCount; row++)
                 {
-                    if (IsRowEmpty(worksheet, row))
-                        continue;
+                    if (IsRowEmpty(worksheet, row)) continue;
 
                     var assetType = GetCellValue(worksheet.Cells[row, 4]);
-                    if (string.IsNullOrWhiteSpace(assetType))
-                        continue;
+                    if (string.IsNullOrWhiteSpace(assetType)) continue;
 
-                    var user = await EnsureUserAsync(worksheet, row);
-                    var dateAcquired = ParseDate(GetCellValue(worksheet.Cells[row, 5]));
-                    var liDescription = BuildDescription(worksheet, row);
                     var assetBarcode = GetCellValue(worksheet.Cells[row, 6]);
-
-                    var history = new List<string>
-            {
-                GetCellValue(worksheet.Cells[row, 19]),
-                GetCellValue(worksheet.Cells[row, 20]),
-                GetCellValue(worksheet.Cells[row, 21]),
-                GetCellValue(worksheet.Cells[row, 22]),
-                GetCellValue(worksheet.Cells[row, 23]),
-                GetCellValue(worksheet.Cells[row, 24]),
-                GetCellValue(worksheet.Cells[row, 25])
-            }.Where(h => !string.IsNullOrWhiteSpace(h)).ToList();
-
-                    string status = user != null ? "ACTIVE" : "INACTIVE";
+                    if (string.IsNullOrWhiteSpace(assetBarcode)) continue;
 
                     if (computerTypes.Contains(assetType))
                     {
-                        var computer = new Computer
+                        var user = await EnsureUserAsync(worksheet, row);
+                        var computer = await _context.computers
+                            .FirstOrDefaultAsync(c => c.asset_barcode == assetBarcode);
+
+                        if (computer == null)
                         {
-                            type = assetType,
-                            date_acquired = dateAcquired,
-                            asset_barcode = assetBarcode,
-                            brand = GetCellValue(worksheet.Cells[row, 7]),
-                            model = GetCellValue(worksheet.Cells[row, 8]),
-                            ram = GetCellValue(worksheet.Cells[row, 9]),
-                            ssd = GetCellValue(worksheet.Cells[row, 10]),
-                            hdd = GetCellValue(worksheet.Cells[row, 11]),
-                            gpu = GetCellValue(worksheet.Cells[row, 12]),
-                            board = GetCellValue(worksheet.Cells[row, 13]),
-                            color = GetCellValue(worksheet.Cells[row, 14]),
-                            serial_no = GetCellValue(worksheet.Cells[row, 15]),
-                            po = GetCellValue(worksheet.Cells[row, 16]),
-                            warranty = GetCellValue(worksheet.Cells[row, 17]),
-                            cost = TryParseDecimal(worksheet.Cells[row, 18]) ?? 0,
-                            remarks = GetCellValue(worksheet.Cells[row, 26]),
-                            size = GetCellValue(worksheet.Cells[row, 27]),
-                            owner_id = user?.id,
-                            date_created = DateTime.UtcNow,
-                            li_description = liDescription,
-                            history = history,
-                            status = status
-                        };
+                            var dateAcquired = ParseDate(GetCellValue(worksheet.Cells[row, 5]));
+                            var liDescription = BuildDescription(worksheet, row);
 
-                        _context.computers.Add(computer);
-                        await _context.SaveChangesAsync();
+                            computer = new Computer
+                            {
+                                type = assetType,
+                                date_acquired = dateAcquired,
+                                asset_barcode = assetBarcode,
+                                brand = GetCellValue(worksheet.Cells[row, 8]),
+                                model = GetCellValue(worksheet.Cells[row, 9]),
+                                color = GetCellValue(worksheet.Cells[row, 27]),
+                                po = GetCellValue(worksheet.Cells[row, 28]),
+                                warranty = GetCellValue(worksheet.Cells[row, 30]),
+                                cost = TryParseDecimal(worksheet.Cells[row, 31]) ?? 0,
+                                remarks = GetCellValue(worksheet.Cells[row, 39]),
+                                size = GetCellValue(worksheet.Cells[row, 40]),
+                                owner_id = user?.id,
+                                date_created = DateTime.UtcNow,
+                                li_description = liDescription,
+                                status = user != null ? "ACTIVE" : "INACTIVE"
+                            };
 
-                        await LogToCentralizedSystem(
-                            computer.type,
-                            computer.asset_barcode,
-                            "Created",
-                            performedByUserId,
-                            "Imported from file"
-                        );
+                            _context.computers.Add(computer);
+                            await _context.SaveChangesAsync();
 
-                        var computerComponents = await StoreInComputerComponentsAsync(worksheet, row, assetType, user, computer);
-
-                        foreach (var component in computerComponents)
-                        {
                             await LogToCentralizedSystem(
-                                component.type,
-                                component.uid,
+                                computer.type,
+                                computer.asset_barcode,
                                 "Created",
                                 performedByUserId,
                                 "Imported from file"
                             );
                         }
+                    }
+                }
 
-                        (accountabilityCodeCounter, trackingCodeCounter) = await UpdateUserAccountabilityListAsync(user, computer, accountabilityCodeCounter, trackingCodeCounter);
+                // Second pass - process components and assets
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    if (IsRowEmpty(worksheet, row)) continue;
+
+                    var assetType = GetCellValue(worksheet.Cells[row, 4]);
+                    if (string.IsNullOrWhiteSpace(assetType)) continue;
+
+                    var assetBarcode = GetCellValue(worksheet.Cells[row, 6]);
+                    var user = await EnsureUserAsync(worksheet, row);
+                    var dateAcquired = ParseDate(GetCellValue(worksheet.Cells[row, 5]));
+                    var liDescription = BuildDescription(worksheet, row);
+
+                    var history = new List<string>
+                    {
+                        GetCellValue(worksheet.Cells[row, 32]),
+                        GetCellValue(worksheet.Cells[row, 33]),
+                        GetCellValue(worksheet.Cells[row, 34]),
+                        GetCellValue(worksheet.Cells[row, 35]),
+                        GetCellValue(worksheet.Cells[row, 36]),
+                        GetCellValue(worksheet.Cells[row, 37]),
+                        GetCellValue(worksheet.Cells[row, 38])
+                    }.Where(h => !string.IsNullOrWhiteSpace(h)).ToList();
+
+                    string status = user != null ? "ACTIVE" : "INACTIVE";
+
+                    if (computerTypes.Contains(assetType))
+                    {
+                        var computer = await _context.computers
+                            .FirstOrDefaultAsync(c => c.asset_barcode == assetBarcode);
+
+                        if (computer != null)
+                        {
+                            await ProcessComputerComponents(worksheet, row, user, computer);
+                            (accountabilityCodeCounter, trackingCodeCounter) = await UpdateUserAccountabilityListAsync(user, computer, accountabilityCodeCounter, trackingCodeCounter);
+                        }
                     }
                     else
                     {
-                        var rootComputerIds = await GetRootComputerIdsAsync(user.id);
-
-                        // Fetch computers owned by the user
-                        var userComputers = await _context.computers
-                            .Where(c => c.owner_id == user.id)
-                            .ToListAsync();
-
-                        int? linkedComputerId = null;
-
-                        Console.WriteLine($"🔍 Checking assigned assets for asset barcode: {assetBarcode}");
-
-                        // Convert assetBarcode to integer
-                        if (!string.IsNullOrWhiteSpace(assetBarcode) && int.TryParse(assetBarcode, out int assetId))
-                        {
-                            foreach (var computer in userComputers)
-                            {
-                                // Ensure assigned assets are integers
-                                var assignedAssetIds = computer.assigned_assets?
-                                    .Select(a => int.TryParse(a.ToString(), out int val) ? val : -1)
-                                    .ToList() ?? new List<int>();
-
-                                Console.WriteLine($"💻 Computer ID: {computer.id}, Assigned Assets: {string.Join(",", assignedAssetIds)}");
-
-                                if (assignedAssetIds.Contains(assetId))
-                                {
-                                    linkedComputerId = computer.id;
-                                    Console.WriteLine($"✅ Linked asset {assetId} to computer ID {linkedComputerId}");
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"⚠️ Warning: Asset barcode '{assetBarcode}' is not a valid integer.");
-                        }
-
-                        var asset = new Asset
-                        {
-                            type = assetType,
-                            date_acquired = dateAcquired,
-                            asset_barcode = assetBarcode,
-                            brand = GetCellValue(worksheet.Cells[row, 7]),
-                            model = GetCellValue(worksheet.Cells[row, 8]),
-                            size = GetCellValue(worksheet.Cells[row, 13]),
-                            color = GetCellValue(worksheet.Cells[row, 14]),
-                            serial_no = GetCellValue(worksheet.Cells[row, 15]),
-                            po = GetCellValue(worksheet.Cells[row, 16]),
-                            warranty = GetCellValue(worksheet.Cells[row, 17]),
-                            cost = TryParseDecimal(worksheet.Cells[row, 18]) ?? 0,
-                            remarks = GetCellValue(worksheet.Cells[row, 26]),
-                            owner_id = user.id,
-                            date_created = DateTime.UtcNow,
-                            li_description = liDescription,
-                            history = history,
-                            root_history = rootComputerIds,
-                            status = status,
-                            computer_id = linkedComputerId // Assigning computer ID based on assigned_assets
-                        };
-
-                        Console.WriteLine($"🔄 Saving asset {assetBarcode} with computer_id: {linkedComputerId}");
-
-                        _context.Assets.Add(asset);
-                        await _context.SaveChangesAsync();
-
-                        await LogToCentralizedSystem(
-                            asset.type,
-                            asset.asset_barcode,
-                            "Created",
-                            performedByUserId,
-                            "Imported from file"
-                        );
-
-                        (accountabilityCodeCounter, trackingCodeCounter) = await UpdateUserAccountabilityListAsync(user, asset, accountabilityCodeCounter, trackingCodeCounter);
+                        await ProcessNonComputerAsset(worksheet, row, user, dateAcquired, liDescription,
+                            assetBarcode, assetType, history, status, accountabilityCodeCounter,
+                            trackingCodeCounter, performedByUserId);
                     }
                 }
             }
@@ -202,6 +137,164 @@ namespace ITAM.Services.AssetImportService
             await UpdateComputersAssignedAssets();
             return "Import completed successfully.";
         }
+
+        private async Task ProcessNonComputerAsset(ExcelWorksheet worksheet, int row, User user,
+            string dateAcquired, string liDescription, string assetBarcode, string assetType,
+            List<string> history, string status, int accountabilityCodeCounter, int trackingCodeCounter,
+            string performedByUserId)
+        {
+            var rootComputerIds = await GetRootComputerIdsAsync(user.id);
+            var userComputers = await _context.computers
+                .Where(c => c.owner_id == user.id)
+                .ToListAsync();
+
+            int? linkedComputerId = null;
+
+            if (!string.IsNullOrWhiteSpace(assetBarcode) && int.TryParse(assetBarcode, out int assetId))
+            {
+                foreach (var computer in userComputers)
+                {
+                    var assignedAssetIds = computer.assigned_assets?
+                        .Select(a => int.TryParse(a.ToString(), out int val) ? val : -1)
+                        .ToList() ?? new List<int>();
+
+                    if (assignedAssetIds.Contains(assetId))
+                    {
+                        linkedComputerId = computer.id;
+                        break;
+                    }
+                }
+            }
+
+            var asset = new Asset
+            {
+                type = assetType,
+                date_acquired = dateAcquired,
+                asset_barcode = assetBarcode,
+                brand = GetCellValue(worksheet.Cells[row, 8]),
+                model = GetCellValue(worksheet.Cells[row, 9]),
+                size = GetCellValue(worksheet.Cells[row, 40]),
+                color = GetCellValue(worksheet.Cells[row, 27]),
+                po = GetCellValue(worksheet.Cells[row, 28]),
+                warranty = GetCellValue(worksheet.Cells[row, 30]),
+                cost = TryParseDecimal(worksheet.Cells[row, 31]) ?? 0,
+                remarks = GetCellValue(worksheet.Cells[row, 39]),
+                owner_id = user.id,
+                date_created = DateTime.UtcNow,
+                li_description = liDescription,
+                history = history,
+                root_history = rootComputerIds,
+                status = status,
+                computer_id = linkedComputerId
+            };
+
+            _context.Assets.Add(asset);
+            await _context.SaveChangesAsync();
+
+            await LogToCentralizedSystem(
+                asset.type,
+                asset.asset_barcode,
+                "Created",
+                performedByUserId,
+                "Imported from file"
+            );
+
+            (accountabilityCodeCounter, trackingCodeCounter) = await UpdateUserAccountabilityListAsync(
+                user, asset, accountabilityCodeCounter, trackingCodeCounter);
+        }
+
+        private async Task ProcessComputerComponents(ExcelWorksheet worksheet, int row, User user, Computer computer)
+        {
+            // FIXED: Corrected column mappings based on the Excel file structure
+            // Format: Component Type -> (description column, inventory code column)
+            var componentMappings = new Dictionary<string, (int descriptionCol, int invtCodeCol)>
+            {
+                {"RAM", (10, 11)},     // RAM:     descriptionCol = 10 (RAM), invtCodeCol = 11 (RAM INVT.CODE)
+                {"SSD", (12, 13)},     // SSD:     descriptionCol = 12 (SSD), invtCodeCol = 13 (SSD INVT.CODE)
+                {"HDD", (14, 15)},     // HDD:     descriptionCol = 14 (HDD), invtCodeCol = 15 (HDD INVT.CODE)
+                {"GPU", (16, 17)},     // GPU:     descriptionCol = 16 (GPU), invtCodeCol = 17 (GPU INVT.CODE)
+                {"BOARD", (18, 19)},   // BOARD:   descriptionCol = 18 (BOARD), invtCodeCol = 19 (BOARD INVT.CODE)
+                {"PSU", (20, 21)},     // PSU:     descriptionCol = 20 (PSU), invtCodeCol = 21 (PSU INVT.CODE)
+                {"CPU", (22, 23)},     // CPU:     descriptionCol = 22 (CPU), invtCodeCol = 23 (CPU INVT.CODE)
+                {"CPU FAN", (24, 25)}, // CPU FAN: descriptionCol = 24 (CPU FAN), invtCodeCol = 25 (CPU FAN INVT.CODE)
+                {"CD ROM", (26, 27)}   // CD ROM:  descriptionCol = 26 (CD ROM), invtCodeCol = 27 (CD ROM INVT.CODE)
+            };
+
+            foreach (var mapping in componentMappings)
+            {
+                var componentType = mapping.Key;
+                var description = GetCellValue(worksheet.Cells[row, mapping.Value.descriptionCol]);
+                var inventoryCode = GetCellValue(worksheet.Cells[row, mapping.Value.invtCodeCol]);
+
+                if (!string.IsNullOrWhiteSpace(description) || !string.IsNullOrWhiteSpace(inventoryCode))
+                {
+                    // Store in computer_components table
+                    var existingComponent = await _context.computer_components
+                        .FirstOrDefaultAsync(cc => cc.computer_id == computer.id &&
+                                                  cc.type == componentType);
+
+                    if (existingComponent == null)
+                    {
+                        var component = new ComputerComponents
+                        {
+                            type = componentType,
+                            description = description ?? string.Empty,     // e.g., "KINGSTON 8GB DDR4"
+                            uid = inventoryCode,                           // e.g., "2025-A0103-00002"
+                            asset_barcode = computer.asset_barcode,
+                            status = user != null ? "ACTIVE" : "INACTIVE",
+                            history = new List<string> { computer.id.ToString() },
+                            owner_id = user?.id,
+                            computer_id = computer.id,
+                            date_acquired = computer.date_acquired
+                        };
+
+                        _context.computer_components.Add(component);
+                    }
+                    else
+                    {
+                        // Update existing component if needed
+                        existingComponent.description = description ?? existingComponent.description;
+                        existingComponent.uid = inventoryCode ?? existingComponent.uid;
+                    }
+
+                    // FIXED: Store in computers table with correct inventory codes
+                    switch (componentType)
+                    {
+                        case "RAM":
+                            computer.ram = inventoryCode;        // RAM description (from column 10)
+                            break;
+                        case "SSD":
+                            computer.ssd = inventoryCode;        // SSD description (from column 12)
+                            break;
+                        case "HDD":
+                            computer.hdd = inventoryCode;        // HDD description (from column 14)
+                            break;
+                        case "GPU":
+                            computer.gpu = inventoryCode;        // GPU description (from column 16)
+                            break;
+                        case "BOARD":
+                            computer.board = inventoryCode;      // BOARD description (from column 18)
+                            break;
+                        case "PSU":
+                            computer.psu = inventoryCode;        // PSU description (from column 20)
+                            break;
+                        case "CPU":
+                            computer.cpu = inventoryCode;        // CPU description (from column 22)
+                            break;
+                        case "CPU FAN":
+                            computer.cpu_fan = inventoryCode;    // CPU FAN description (from column 24)
+                            break;
+                        case "CD ROM":
+                            computer.cd_rom = inventoryCode;     // CD ROM description (from column 26)
+                            break;
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+
 
         private async Task LogToCentralizedSystem(
             string type,
@@ -335,96 +428,10 @@ namespace ITAM.Services.AssetImportService
 
 
 
-        // Method to store components like RAM, SSD, etc., in the ComputerComponents table
-        private async Task<List<ComputerComponents>> StoreInComputerComponentsAsync(ExcelWorksheet worksheet, int row, string assetType, User user, Computer computer)
-        {
-            var assetBarcode = worksheet.Cells[row, 6].Text.Trim();
-            var ownerId = user.id;
-            var storedComponents = new List<ComputerComponents>();
-
-            // Define headers that you want to store as 'type'
-            var headers = new string[] { "RAM", "SSD", "HDD", "GPU", "BOARD" };
-            var values = new string[]
-            {
-            worksheet.Cells[row, 9].Text.Trim(),  // 'RAM'
-            worksheet.Cells[row, 10].Text.Trim(), // 'SSD'
-            worksheet.Cells[row, 11].Text.Trim(), // 'HDD'
-            worksheet.Cells[row, 12].Text.Trim(),  // 'GPU'
-            worksheet.Cells[row, 13].Text.Trim()  // 'BOARD'
-
-            };
-
-            // Fetch the last used UID from the computer_components table
-            var lastUid = await _context.computer_components
-                .OrderByDescending(c => c.id)
-                .FirstOrDefaultAsync();
-
-            int lastUidIndex = lastUid != null ? int.Parse(lastUid.uid.Split('-')[1]) : 0;
-
-            string GenerateUID(int uidIndex) => $"UID-{uidIndex:D3}";
-
-            // Loop through the headers and values to create components
-            for (int i = 0; i < headers.Length; i++)
-            {
-                var description = values[i];
-
-                // Only create a component if the description is not empty
-                if (!string.IsNullOrWhiteSpace(description))
-                {
-                    var component = new ComputerComponents
-                    {
-                        type = headers[i],
-                        description = description,
-                        asset_barcode = assetBarcode,
-                        status = ownerId != null ? "ACTIVE" : "INACTIVE",
-                        history = new List<string> { computer.id.ToString() },
-                        owner_id = ownerId,
-                        computer_id = computer.id,
-                        uid = GenerateUID(++lastUidIndex),
-                        date_acquired = computer.date_acquired // ✅ Store same date_acquired as computer
-                    };
-
-                    _context.computer_components.Add(component);
-                    storedComponents.Add(component);
-                }
-            }
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                Console.WriteLine("Data saved successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error while saving: {ex.Message}");
-            }
-
-            // Update the computer entity with the UIDs of components (RAM, SSD, HDD, GPU, BOARD)
-            var components = await _context.computer_components
-                .Where(c => c.computer_id == computer.id && headers.Contains(c.type))
-                .ToListAsync();
-
-            var componentDict = components.ToDictionary(c => c.type, c => c.uid);
-
-            computer.ram = componentDict.ContainsKey("RAM") ? componentDict["RAM"] : null;
-            computer.ssd = componentDict.ContainsKey("SSD") ? componentDict["SSD"] : null;
-            computer.hdd = componentDict.ContainsKey("HDD") ? componentDict["HDD"] : null;
-            computer.gpu = componentDict.ContainsKey("GPU") ? componentDict["GPU"] : null;
-            computer.board = componentDict.ContainsKey("BOARD") ? componentDict["BOARD"] : null;
+      
 
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                Console.WriteLine("Computer updated with UIDs successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error while updating computer with UIDs: {ex.Message}");
-            }
 
-            return storedComponents;
-        }
 
 
 

@@ -6,11 +6,11 @@ namespace ITAM.Models
     {
         public int id { get; set; }
         public string? date_acquired { get; set; }
-        public string type { get; set; }
-        public string description { get; set; }
+        public string? type { get; set; }
+        public string? description { get; set; }
         public string? asset_barcode { get; set; }
-        public string uid { get; set; }
-        public decimal cost { get; set; }
+        public string? uid { get; set; }
+        public decimal? cost { get; set; }
         public string? status { get; set; }
         public List<string>? history { get; set; } //computer_id
         public int? owner_id { get; set; }
